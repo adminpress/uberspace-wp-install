@@ -6,3 +6,8 @@ wp-install erzeugt ein Unterverzeichnis mit der passenden Domainbenennung im Web
 
 ## cleanup
 Ein Script, das entstand um die Testläufe von wp-install wieder rückstandsfrei zu entsorgen
+
+## ToDo
++ Automatismus, der aus der .my.cnf von uberspace das Datenbankpasswort ausliest und an die dbpass-Variable übergibt. Derzeit noch **hardgecodet** einzufügen, was natürlich ein **Sicherheitsrisiko** darstellt
++ Parameterübergabe von shortname und title und erst beim fehlen einer der beiden Parameter die interaktive Abfrage
++ komplett interaktiver Modus um alle Variablen abzufragen (Voreinstellungen liefern) und ggf. zu ändern
