@@ -1,5 +1,5 @@
 user=`whoami`                            # finds your username on uberspace
-dbpass=""                                # reads password from .my.cnf 
+dbpass=`grep -m1 password=.*$ .my.cnf | awk '{print substr($1,10)}'`                               # reads password from .my.cnf 
 domain=""                                # the main-domain to use for creation of subs
 wpadmin=""                               # your admin-username in WordPress
 wpadminmail=""                           # your email in WordPress
