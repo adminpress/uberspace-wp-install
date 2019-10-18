@@ -14,8 +14,6 @@ echo -n "shortname of your project (-> will result in subdomain, db-table, db-pr
 read siteurl
 echo -n "fullname of your project (-> will result in title of your WP-Install): "
 read sitename
-echo -n "2nd admin needed? (y/n): "
-read ADMIN
 echo -n "continue with installation? (y/n): "
 read run
 if [ "$run" == n ] ; then
@@ -39,11 +37,14 @@ wp config create --dbname=${user}_${siteurl} --dbuser=$user --dbpass=$dbpass --d
 echo "       • wp-config.php created              "
 wp core install --url=${siteurl}.${domain} --title="$sitename" --admin_user=$wpadmin --admin_email=$wpadminmail --skip-plugins --quiet
 echo "       • WordPress is up and running        "
+echo -n "2nd admin needed? (y/n): "
+read ADMIN
 if ["$ADMIN" == y] ; then
 wp user create $2ndadmin $secondadminmail --role=administrator --porcelain
 echo "       • 2nd Admin User created             "
 else
 exit
+fi
 echo "============================================"
 echo "            All the magic is done!          "
 echo "============================================"
