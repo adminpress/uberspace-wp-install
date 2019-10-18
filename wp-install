@@ -33,9 +33,9 @@ mysql -e "CREATE DATABASE ${user}_${siteurl}"
 echo "       • Database created                   "
 wp core download --quiet
 echo "       • WP download completed              "
-wp config create --dbname=${user}_${siteurl} --dbuser=$user --dbpass=$dbpass --dbprefix=${siteurl:1:3} --quiet
+wp config create --dbname=${user}_${siteurl} --dbuser=${user} --dbpass=${dbpass} --dbprefix=${siteurl:1:3} --quiet
 echo "       • wp-config.php created              "
-wp core install --url=${siteurl}.${domain} --title="$sitename" --admin_user=$wpadmin --admin_email=$wpadminmail --skip-plugins --quiet
+wp core install --url=${siteurl}.${domain} --title="${sitename}" --admin_user=${wpadmin} --admin_email=${wpadminmail} --skip-plugins --quiet
 echo "       • WordPress is up and running        "
 wp user create $2ndadmin $secondadminmail --role=administrator --porcelain
 echo "       • 2nd Admin User created             "
