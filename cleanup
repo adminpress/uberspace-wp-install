@@ -1,6 +1,17 @@
-user=`whoami`                            # finds your username on uberspace
-domain="entwicklung.review"              # the main-domain to use for creation of subs
-mysql -e "DROP DATABASE ${user}_$1"
-uberspace web domain del ${1}.${domain}
+# cleanup bash script - requires shortname as parameter
+#
+# ------------
+# BEGIN CONFIG
+# ------------
+
+USER=""                            # your username on uberspace
+DOMAIN=""           			   # the main-domain to use for creation of subs
+
+# ------------
+# END CONFIG
+# ------------
+
+mysql -e "DROP DATABASE ${USER}_$1"
+uberspace web domain del ${1}.${DOMAIN}
 cd ~/webroot/
-rm -rf ${1}.${domain}
+rm -rf ${1}.${DOMAIN}
