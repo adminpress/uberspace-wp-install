@@ -1,20 +1,20 @@
 #
-# wp-install bash script for uberspace v7
+# wp-install bash script for uberspace v7 - v1.4
 #
 # ------------
 # BEGIN CONFIG
 # ------------
-
-USER=""																	# your username on uberspace
-DBPASS=`grep -m1 password=.*$ ~/.my.cnf | awk '{print substr($1,10)}'`	# reads password from .my.cnf 
-DOMAIN=""																# the main-domain to use for creation of subs
-WPADMIN=""																# your admin-username in WordPress
-WPADMINEMAIL=""															# your email in WordPress
-
+USER=""																					# your username on uberspace
+DBPASS=`grep -m1 password=.*$ ~/.my.cnf | awk '{print substr($1,10)}'`					# reads password from .my.cnf 
+DOMAIN=""																				# the main-domain to use for creation of subs
+WPADMIN=""																				# your admin-username in WordPress
+WPADMINEMAIL=""																			# your email in WordPress
 # ------------
 # END CONFIG
 # ------------
-
+##
+## Let's go:
+##
 clear
 echo "============================================"
 echo "          WordPress Install Script          "
@@ -28,30 +28,55 @@ DBNAME=${USER}_${SITEURL}
 DBPREFIX="${SITEURL:0:3}_"
 FQDN="${SITEURL}.${DOMAIN}"
 echo -n "continue with installation? (y/n): "
+##
+## Variables are set, we can install. Shall we?
+##
 read RUN
-if [ "$RUN" == n ] ; then
+if [ "$RUN" != y ] ; then
 exit
 else
+##
+## Ok, here we go:
+##
 echo
 echo "============================================"
 echo "            Now do the magic!               "
 echo "============================================"
-cd ~/webroot/
-mkdir ${FQDN}
+cd ~/webroot/																			# change to the base webserver directory
+mkdir ${FQDN}																			# create a new subdirectory named like the URL of this install
 echo "       • SiteDir created                    "
 cd ${FQDN}
-uberspace web domain add ${FQDN}
+uberspace web domain add ${FQDN} >> /dev/null											# add the URL to the webserver and get a certificate
 echo "       • Site added and Cert issued         "
-mysql -e "CREATE DATABASE ${DBNAME}"
+mysql -e "CREATE DATABASE ${DBNAME}"													# create a database for this installation
 echo "       • Database created                   "
-wp core download --quiet
+wp core download --quiet																# download, configure and install WordPress 
 echo "       • WP download completed              "
 wp config create --dbname=${USER}_${SITEURL} --dbuser=${USER} --dbpass=${DBPASS} --dbprefix="${DBPREFIX}" --quiet
 echo "       • wp-config.php created              "
-wp core install --url=${SITEURL}.${DOMAIN} --title="${SITENAME}" --admin_user=${WPADMIN} --admin_email=${WPADMINEMAIL} --skip-email --skip-plugins=all --quiet
-wp plugin uninstall hello akismet
-wp plugin install wordpress-seo child-theme-configurator --activate
-wp theme install astra --activate
+wp core install --url=${SITEURL}.${DOMAIN} --title="${SITENAME}" --admin_user=${WPADMIN} --admin_email=${WPADMINEMAIL} --skip-plugins=all --skip-email
+wp plugin delete hello akismet															# get rid of the pre-installed plugins
+##
+## let's have our own ones we really need
+##
+wp plugin install ultimate-addons-for-gutenberg health-check --activate					# these ones are activated right away
+wp plugin install --activate https://github.com/afragen/git-updater/archive/master.zip 	# this one as well, but it's not on the WP-Repo
+wp plugin install imagify wordpress-seo													# these are just installed and will be activated later
+wp theme delete twentytwenty twentytwentyone											# same for themes, just keep the latest default one …
+wp theme install astra																	# … and install WP-Astra
+wp scaffold child-theme ${SITEURL} --parent_theme="astra" --theme_name="${SITENAME}" --author="KeDe Digital LLP" --author_uri="https://digital-bridge.de" --theme_uri="https://github.com/stkjj/${SITEURL}"
+wp theme activate ${SITEURL}															# let's make a childtheme from Astra and name it
+cp /var/www/virtual/whoamo/${FQDN}/wp-content/themes/astra/screenshot.jpg /var/www/virtual/whoamo/${FQDN}/wp-content/themes/${SITEURL}/
+##
+## adjust some info in the header so Git-Updater can work with it
+##
+head -n -3 /var/www/virtual/whoamo/${FQDN}/wp-content/themes/${SITEURL}/style.css > tmp.txt && mv tmp.txt /var/www/virtual/whoamo/${FQDN}/wp-content/themes/${SITEURL}/style.css
+echo "Description: Theme for ${SITENAME}. Child-Theme based on Astra \nVersion: 1.0.0 \nLicense: GNU General Public License v2 or later \nLicense URI: \nhttp://www.gnu.org/licenses/gpl-2.0.html \nText Domain: ${SITEURL} \nDomain Path: /languages \nGitHub Theme URI: https://github.com/stkjj/${SITEURL} \nPrimary Branch: main \n*/" >> /var/www/virtual/whoamo/${FQDN}/wp-content/themes/${SITEURL}/style.css
+##
+## Let's work on the language settings
+##
+wp language core install de_DE_formal de_DE												# both German language version - formal and informal will be installed
+wp site switch-language de_DE															# activate the informal version - we can switch later
 echo "============================================"
 echo "            All the magic is done!          "
 echo "============================================"

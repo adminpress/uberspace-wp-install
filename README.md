@@ -13,6 +13,8 @@ Ein Script, das entstand um die Testläufe von wp-install wieder rückstandsfrei
 
 ## Changelog
 
+1.4 Versionnr. in Script includiert, viel mehr Kommentierung und Erweiterung der WP-CLI Funktionen wie Download vom GitHub Repo, Anpassung der Sprachversion, Erzeugung eines Childthemes
+
 1.3 Bugfixes und Kommentare
 
 1.2 Zweiter Admin - revoked
