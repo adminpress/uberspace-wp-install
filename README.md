@@ -1,24 +1,30 @@
 # uberspace-wp-install
-Shell Script um auf Uberspace7 auf die Schnelle ein neues Kundenentwicklungsprojekt mit WordPress auszurollen
+Shell script to roll out WordPress dev environments for new customer projects on Uberspace.de - Serverversion 7
 
 ## WP-Install
-wp-install erzeugt ein Unterverzeichnis mit der passenden Domainbenennung im Webroot für die Installation von WordPress. Eine separate Datenbank für diese Installation wird erzeugt. Anschliessend wird WordPress in der aktuellsten Version geladen, die wp-config.php generiert und WordPress fertig eingerichtet. Lediglich die IPs (v4 und v6) müssen noch beim verwaltenden Nameserver hinterlegt werden um die Installation ansprechen zu können. Es empfiehlt sich, einen Wildcard-Eintrag im DNS für die fragliche Domain zu erzeugen, dann ist die Installation sofort ansprechbar.
+wp-install creates a subdirectory with the needed naming convention for uberspace within the webroot. A seperate database for this installation is created. WP-CLI downloads, configures and installs the latest WordPress version. As uberspace does not offer domain hosting the IPv4 and IPv6 entries have to done on the nameserver (I use Namecheap). Having a wildcard for subs of course omits this step and the installation is instantly available. Addtional modifications for language, plugins and themes are done via WP-CLI, as far as creating a childtheme and modifying it so that it can be updatet with Git-Updater.
 
-## cleanup
-Ein Script, das entstand um die Testläufe von wp-install wieder rückstandsfrei zu entsorgen. Erwartet den Shortname der bei wp-install angegeben wurde als Parameter.
+## Cleanup
+once the development is finalized and the live site is shipped, cleanup will exactly do this: get rid of all files and the datebase and remove the entries at uberspace domain management. The shortname that is chose during the installation process has to be submitted as parameter
+
+## uberspace-wp-install
+Shell Script um auf Uberspace7 auf die Schnelle ein neues Kundenentwicklungsprojekt mit WordPress auszurollen
 
 ## ToDo
-+ Parameterübergabe von shortname und title und erst beim fehlen einer der beiden Parameter die interaktive Abfrage
-+ komplett interaktiver Modus um alle Variablen abzufragen (Voreinstellungen liefern) und ggf. zu ändern
++ optional parameters for shortname and title, alternatively the interactive entry for these
++ complete interactive mode to ask for all variable (with default settings)
++ read config-file with parameters
 
 ## Changelog
 
-1.4 Versionnr. in Script includiert, viel mehr Kommentierung und Erweiterung der WP-CLI Funktionen wie Download vom GitHub Repo, Anpassung der Sprachversion, Erzeugung eines Childthemes
+1.4 more wp-cli magic, including the download from a github repo, change of language settings, creation of childtheme and tweaking via commandline to make it git-updater compatible. More comments
+
+1.3 buxfixes and comments
 
 1.3 Bugfixes und Kommentare
 
-1.2 Zweiter Admin - revoked
+1.2 second admin - revoked
 
-1.1 Automatismus, der aus der .my.cnf von uberspace das Datenbankpasswort ausliest und an die dbpass-Variable übergibt eingefügt
+1.1 automatic retrieval of db-passwort from .my.cnf and passing it to the respective variable - no password stored within the script
 
 1.0 Initial release
